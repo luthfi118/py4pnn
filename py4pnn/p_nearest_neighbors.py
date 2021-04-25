@@ -1,7 +1,9 @@
-from py4knn.distance import *
+from py4pnn.distance import *
+
 class pnn:
     def __init__(self):
         pass
+
     def __distance(self,x_train,x_test,opt):
         dis=[]
         for i in range(len(x_train)):
@@ -20,15 +22,37 @@ class pnn:
             else:
                 dis.append(euclidean(x_train[i],x_test))
         return dis
+
     def __sort(self,dis,t_train,k):
-        for i in range(len(dis)):
-            for j in range(len(dis)-i-1):
-                if(dis[j]>dis[j+1]):
-                    dis[j],dis[j+1]=dis[j+1],dis[j]
-                    t_train[j],t_train[j+1]=t_train[j+1],t_train[j]
-        return t_train[:k]
+        n_class = list(set(t_train))
+        nearest_dis = []
+        for c in range(len(n_class)):
+            dis_cpy = dis.copy()
+            t_train_cpy = t_train.copy()
+            for i in range(len(dis_cpy)):
+                for j in range(len(dis_cpy)-i-1):
+                    if(dis_cpy[j]>dis_cpy[j+1]):
+                        dis_cpy[j],dis_cpy[j+1]=dis_cpy[j+1],dis_cpy[j]
+                        t_train_cpy[j],t_train_cpy[j+1]=t_train_cpy[j+1],t_train_cpy[j]
+            temp = []
+            for i in range(len(t_train)):
+                if(t_train[i]==n_class[c]):
+                    temp.append(dis[i])
+            nearest_dis.append(temp[:k])
+        return nearest_dis, n_class
+
     def __voting(self,t):
-        return max(set(t), key=t.count)
+        dis, target = t
+        total_dis = []
+        prediction = 0
+        total_dis = 999
+        for i in range(len(target)):
+            temp = sum(dis[i])
+            if(total_dis>temp):
+                total_dis = temp
+                prediction = target[i]
+        return prediction
+
     def predict(self,x_train,t_train,x_test,k,opt='euclidean'):
         dis=[]
         sorted_t=[]

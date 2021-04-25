@@ -27,5 +27,5 @@ classifier = pnn()
 x_train = [[0.23,0.54],[0.45,1.23],[1.54,0.23],[0.93,0.535]]
 t_train = [0,1,0,1]
 x_test = [[0.34,0.65],[0.90,0.50]]
-y = classifier.predict(x_train,t_train,x_test,1,'eclidean')
+y = classifier.predict(x_train,t_train,x_test,1,'euclidean')
 ```
